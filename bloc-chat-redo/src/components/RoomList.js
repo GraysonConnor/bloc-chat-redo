@@ -7,6 +7,7 @@ class RoomList extends Component {
         this.roomsRef = props.database.database().ref('rooms');
 
             this.state = {
+            name: '',
             rooms: []
         };
     }
@@ -18,12 +19,38 @@ class RoomList extends Component {
         });
     }
 
+    createRoom(e) {
+        e.preventDefault();
+        if (!this.state.name)
+        return;
+
+        this.roomsRef.push({ name: this.state.name});
+        this.setState({ name: '' });
+
+    }
+
+    handleChange(e) {
+        this.setState({ name: e.target.value });
+    }
+
+
     render() {
-        var roomList = this.state.rooms.map((room) =>
-            <li key = {room.key}>{room.name}</li>
-        );
         return(
-            <ul>{roomList}</ul>
+          <div>
+
+          {
+            this.state.rooms.map((room, key) => <ul key = {room.key}>{room.name}</ul>
+            )}
+
+
+            <form onSubmit={(e) => this.createRoom(e)}>
+                <label for="submit">Add New Room</label>
+                <input type="text" value={this.state.name} onChange={(e) => this.handleChange(e)}/>
+                <input type="submit"/>
+            </form>
+
+
+          </div>
         );
     }
 }
